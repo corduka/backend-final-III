@@ -1,0 +1,15 @@
+# .dockerignore
+
+# Core Dependencies
+node_modules
+
+# Git files (already tracked outside)
+.git
+.gitignore
+
+# Local Environment Secrets (We don't want these in the image!)
+.env 
+
+# System and temporary files
+npm-debug.log*
+.DS_Store
