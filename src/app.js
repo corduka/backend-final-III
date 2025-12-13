@@ -12,6 +12,10 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress from 'swagger-ui-express';
 import swaggerOptions from './docs/swagger.config.js'; // Adjust path if needed
 
+import mockAdoptionsRouter from './routes/mockAdoptions.router.js';
+
+app.use('/api', mockAdoptionsRouter);
+
 const specs = swaggerJsdoc(swaggerOptions);
 
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
