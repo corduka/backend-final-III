@@ -1,51 +1,57 @@
 import express from "express";
-import mongoose from "mongoose";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 import exphbs from "express-handlebars";
+
+// Routers
 import productsRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js";
-import { engine } from "express-handlebars";
-import path from "path";
-import { fileURLToPath } from "url";
+import adoptionsRouter from "./routes/adoptions.router.js";
+import mockAdoptionsRouter from "./routes/mockAdoptions.router.js";
 
-import swaggerJsdoc from 'swagger-jsdoc';
-import swaggerUiExpress from 'swagger-ui-express';
-import swaggerOptions from './docs/swagger.config.js'; // Adjust path if needed
+// Swagger
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
+import swaggerOptions from "./docs/swagger.config.js";
 
-import mockAdoptionsRouter from './routes/mockAdoptions.router.js';
-
-app.use('/api', mockAdoptionsRouter);
-
-const specs = swaggerJsdoc(swaggerOptions);
-
-app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config();
 
 const app = express();
 
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
-app.set("view engine", "handlebars");
-app.set("views", "./src/views");
+/* ==============================
+   PATH CONFIG
+================================ */
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+/* ==============================
+   MIDDLEWARES
+================================ */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Handlebars setup
-app.engine("handlebars", engine());
+/* ==============================
+   HANDLEBARS (ONCE)
+================================ */
+app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "views"));
 
-// Routes
+/* ==============================
+   ROUTES
+================================ */
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
+app.use("/api/adoptions", adoptionsRouter);
+app.use("/api/mock/adoptions", mockAdoptionsRouter);
 app.use("/", viewsRouter);
 
-// Mongo connection
-mongoose
-  .connect("mongodb://localhost:27017/backend-final")
-  .then(() => console.log("DB Connected"))
-  .catch((err) => console.error(err));
+/* ==============================
+   SWAGGER
+================================ */
+const specs = swaggerJsdoc(swaggerOptions);
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
-app.listen(8080, () => console.log("Server running on port 8080"));
+export default app;

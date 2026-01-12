@@ -1,12 +1,11 @@
-
 import { Router } from 'express';
 
 const router = Router();
 
-router.get('/mock/adoptions', (req, res) => {
+router.get('/', (req, res) => {
     res.json([
         {
-            _id: 'mock1',
+            _id: 'mock123',
             petId: 'petMock',
             userId: 'userMock',
             status: 'pending'
@@ -15,3 +14,4 @@ router.get('/mock/adoptions', (req, res) => {
 });
 
 export default router;
+
